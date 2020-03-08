@@ -20,7 +20,7 @@ public class Tree extends Particle {
 		
 		//i don't know what this is called. bottom bottom?
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glColor3d(0.2, 0, 0);
+		gl.glColor3d(0.2, 0.1, 0.1);
 		
 		worldPos = Utils.ScreenToWorld(Position.Offset(-5, -20));
 		gl.glVertex2d(worldPos.x, worldPos.y);

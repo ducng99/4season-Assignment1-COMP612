@@ -8,8 +8,7 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 
-import objects.Particle;
-import objects.Tree;
+import objects.*;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -31,9 +30,11 @@ public class Main implements GLEventListener {
 		
 		//Background - Sky
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glColor3d(0.99, 0.99, 0.99);
+		gl.glColor3d(0.8, 0.8, 0.8);
 		gl.glVertex2d(-1, 1);
+		gl.glColor3d(1, 0.9, 1);
 		gl.glVertex2d(1, 1);
+		gl.glColor3d(0.8, 0.8, 0.8);
 		gl.glVertex2d(1, -1);
 		gl.glVertex2d(-1, -1);
 		gl.glEnd();
@@ -82,6 +83,8 @@ public class Main implements GLEventListener {
 			}
 		});
 		
+		Land land = new Land();
+		particles.add(land);
 		Tree tree = new Tree(200, 400, 50);
 		Tree tree1 = new Tree(400, 450, 50);
 		Tree tree2 = new Tree(550, 350, 50);
