@@ -18,30 +18,24 @@ public class Land extends Particle {
 	public void draw(GL2 gl) {
 		Vector tmp = new Vector();
 		Dimension d = Main.frame.getSize();
+		d.height = d.height + 100;
 		
-		gl.glBegin(GL2.GL_POLYGON);
+		Vector[] verticies;
 		
-		gl.glColor3d(0.1, 0, 0);
+		verticies = new Vector[] {
+			Utils.ScreenToWorld(new Vector(0, d.getHeight() / 2)),
+			Utils.ScreenToWorld(new Vector(d.getWidth() / 4, d.getHeight() / 2 - 20)),
+			Utils.ScreenToWorld(new Vector(d.getWidth() / 2, d.getHeight() / 2 + 20)),
+			Utils.ScreenToWorld(new Vector(d.getWidth() / 4 * 3, d.getHeight() / 2 - 10)),
+			Utils.ScreenToWorld(new Vector(d.getWidth(), d.getHeight() / 2 + 10)),
+			Utils.ScreenToWorld(new Vector(d.getWidth(), d.getHeight())),
+			Utils.ScreenToWorld(new Vector(0, d.getHeight()))
+		};
 		
-		tmp = Utils.ScreenToWorld(new Vector(0, d.getHeight() / 2));
-		gl.glVertex2d(tmp.x, tmp.y);
-		tmp = Utils.ScreenToWorld(new Vector(d.getWidth() / 4, d.getHeight() / 2 - 20));
-		gl.glVertex2d(tmp.x, tmp.y);
-		tmp = Utils.ScreenToWorld(new Vector(d.getWidth() / 2, d.getHeight() / 2 + 20));
-		gl.glVertex2d(tmp.x, tmp.y);
-		tmp = Utils.ScreenToWorld(new Vector(d.getWidth() / 4 * 3, d.getHeight() / 2 - 10));
-		gl.glVertex2d(tmp.x, tmp.y);
-
-		gl.glColor3d(0.2, 0.02, 0.02);
-		tmp = Utils.ScreenToWorld(new Vector(d.getWidth(), d.getHeight() / 2 + 10));
-		gl.glVertex2d(tmp.x, tmp.y);
-
-		gl.glColor3d(0.1, 0, 0);
-		tmp = Utils.ScreenToWorld(new Vector(d.getWidth(), d.getHeight()));
-		gl.glVertex2d(tmp.x, tmp.y);
-		tmp = Utils.ScreenToWorld(new Vector(0, d.getHeight()));
-		gl.glVertex2d(tmp.x, tmp.y);
+		double[][] colour= {
+			{0.1, 0, 0, 1}, {0.1, 0, 0, 1}, {0.1, 0, 0, 1}, {0.1, 0, 0, 1}, {0.2, 0.02, 0.02, 1}, {0.1, 0, 0, 1}, {0.1, 0, 0, 1}
+		};
 		
-		gl.glEnd();
+		shapes.Polygon.drawFill(gl, verticies, colour);
 	}
 }

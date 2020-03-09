@@ -1,9 +1,8 @@
 package objects;
 
+import com.jogamp.opengl.GL2;
 import main.Utils;
 import main.Vector;
-
-import com.jogamp.opengl.GL2;
 
 public class Tree extends Particle {
 	
@@ -16,53 +15,48 @@ public class Tree extends Particle {
 
 	@Override
 	public void draw(GL2 gl) {
-		Vector worldPos;
+		Vector[] verticies;
 		
-		//i don't know what this is called. bottom bottom?
-		gl.glBegin(GL2.GL_QUADS);
-		gl.glColor3d(0.2, 0.1, 0.1);
+		//i don't know what this is called. bottom bottom?		
+		verticies = new Vector[] {
+			Utils.ScreenToWorld(Position.Offset(-5, -(height / 4.0))),
+			Utils.ScreenToWorld(Position.Offset(5, -(height / 4.0))),
+			Utils.ScreenToWorld(Position.Offset(5, 0)),
+			Utils.ScreenToWorld(Position.Offset(-5, 0))
+		};
 		
-		worldPos = Utils.ScreenToWorld(Position.Offset(-5, -20));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		worldPos = Utils.ScreenToWorld(Position.Offset(5, -20));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		worldPos = Utils.ScreenToWorld(Position.Offset(5, 0));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		worldPos = Utils.ScreenToWorld(Position.Offset(-5, 0));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		
-		gl.glEnd();
+		shapes.Polygon.drawFill(gl, verticies, new double[] {0.05, 0.3, 0.1, 1});
 
 		gl.glBegin(GL2.GL_TRIANGLES);
 
-		gl.glColor3d(0, 0.4, 0);
 		//Bottom
-		worldPos = Utils.ScreenToWorld(Position.Offset(0, -40));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		worldPos = Utils.ScreenToWorld(Position.Offset(-25, -20));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		worldPos = Utils.ScreenToWorld(Position.Offset(25, -20));
-		gl.glVertex2d(worldPos.x, worldPos.y);
+		verticies = new Vector[] {
+			Utils.ScreenToWorld(Position.Offset(0, -(height / 2.0))),
+			Utils.ScreenToWorld(Position.Offset(-25, -(height / 4.0))),
+			Utils.ScreenToWorld(Position.Offset(25, -(height / 4.0)))
+		};
+		
+		shapes.Triangle.drawFill(gl, verticies, new double[] {0, 0.4, 0, 1});
 		
 		//Middle
-		worldPos = Utils.ScreenToWorld(Position.Offset(0, -55));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		worldPos = Utils.ScreenToWorld(Position.Offset(-20, -35));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		worldPos = Utils.ScreenToWorld(Position.Offset(20, -35));
-		gl.glVertex2d(worldPos.x, worldPos.y);
+		verticies = new Vector[] {
+			Utils.ScreenToWorld(Position.Offset(0, -(height / 4.0 * 3))),
+			Utils.ScreenToWorld(Position.Offset(-20, -(height / 2.0) + 5)),
+			Utils.ScreenToWorld(Position.Offset(20, -(height / 2.0) + 5))
+		};
+		
+		shapes.Triangle.drawFill(gl, verticies, new double[] {0, 0.4, 0, 1});
 		
 		//Top
+		verticies = new Vector[] {
+			Utils.ScreenToWorld(Position.Offset(0, -height)),
+			Utils.ScreenToWorld(Position.Offset(-15, -(height / 4.0 * 3) + 5)),
+			Utils.ScreenToWorld(Position.Offset(15, -(height / 4.0 * 3) + 5))
+		};
+		
 		gl.glColor4f(0.99f, 0.99f, 0.99f, 0.1f);
 		
-		worldPos = Utils.ScreenToWorld(Position.Offset(0, -70));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		
-		gl.glColor3d(0, 0.4, 0);
-		worldPos = Utils.ScreenToWorld(Position.Offset(-15, -50));
-		gl.glVertex2d(worldPos.x, worldPos.y);
-		worldPos = Utils.ScreenToWorld(Position.Offset(15, -50));
-		gl.glVertex2d(worldPos.x, worldPos.y);
+		shapes.Triangle.drawFill(gl, verticies, new double[][] {{0.99, 0.99, 0.99, 1}, {0, 0.4, 0, 1}, {0, 0.4, 0, 1}});
 
 		gl.glEnd();
 	}

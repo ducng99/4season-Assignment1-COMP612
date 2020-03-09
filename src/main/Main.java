@@ -7,6 +7,7 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.FPSAnimator;
 
 import objects.*;
 
@@ -18,9 +19,11 @@ import javax.swing.JFrame;
 
 public class Main implements GLEventListener {
 	public static final JFrame frame = new JFrame("Hello world");
-	private static Animator animator = null;
+	private static FPSAnimator animator = null;
 	
 	private static ArrayList<Particle> particles = new ArrayList<>();
+	
+	private int displayList;
 
 	@Override
 	public void display(GLAutoDrawable gld) {
@@ -28,7 +31,28 @@ public class Main implements GLEventListener {
 		
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 		
+		gl.glEnable(GL2.GL_BLEND);
+		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+		
+		gl.glCallList(displayList);
+		gl.glFlush();
+	}
+
+	@Override
+	public void dispose(GLAutoDrawable gld) {
+	}
+
+	@Override
+	public void init(GLAutoDrawable gld) {
+		final GL2 gl = gld.getGL().getGL2();
+		
+		displayList = gl.glGenLists(1);
+		
+		gl.glNewList(displayList, GL2.GL_COMPILE);
+		
 		//Background - Sky
+		Vector[] verticies = { new Vector(-1, 1)};
+		
 		gl.glBegin(GL2.GL_QUADS);
 		gl.glColor3d(0.8, 0.8, 0.8);
 		gl.glVertex2d(-1, 1);
@@ -38,23 +62,18 @@ public class Main implements GLEventListener {
 		gl.glVertex2d(1, -1);
 		gl.glVertex2d(-1, -1);
 		gl.glEnd();
+
+		Land land = new Land();
+		particles.add(land);
+		
+		GenerateTrees(20);
 		
 		for (Particle p : particles)
 		{
 			p.draw(gl);
 		}
 		
-		gl.glFlush();
-	}
-
-	@Override
-	public void dispose(GLAutoDrawable arg0) {
-
-	}
-
-	@Override
-	public void init(GLAutoDrawable arg0) {
-
+		gl.glEndList();
 	}
 
 	@Override
@@ -73,7 +92,8 @@ public class Main implements GLEventListener {
 		frame.setSize(800, 600);
 		frame.setResizable(false);
 		
-		animator = new Animator(canvas);
+		animator = new FPSAnimator(60);
+		animator.add(canvas);
 		
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
@@ -83,17 +103,16 @@ public class Main implements GLEventListener {
 			}
 		});
 		
-		Land land = new Land();
-		particles.add(land);
-		Tree tree = new Tree(200, 400, 50);
-		Tree tree1 = new Tree(400, 450, 50);
-		Tree tree2 = new Tree(550, 350, 50);
-		particles.add(tree);
-		particles.add(tree1);
-		particles.add(tree2);
-		
 		frame.setVisible(true);
 		
 		animator.start();
+	}
+	
+	public static void GenerateTrees(int numTrees)
+	{		
+		for (int i = 0; i < numTrees; i++)
+		{
+			particles.add(new Tree(Utils.genRand(10, frame.getSize().width), 370 + i * (int)Math.round(80.0 / (double)numTrees), 50 + i * 2));
+		}
 	}
 }

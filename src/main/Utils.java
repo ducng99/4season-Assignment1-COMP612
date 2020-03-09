@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Dimension;
+import java.util.Random;
 
 /**
  * Custom utilities created for ease of access
@@ -8,6 +9,8 @@ import java.awt.Dimension;
  *
  */
 public class Utils {
+	private static Random rand = new Random();
+	
 	/**
 	 * Convert from screen pixels (starts from top-left corner) to world location (-1 -> 1)
 	 * @param loc : a {@link Vector} contains screen pixels location
@@ -45,5 +48,10 @@ public class Utils {
 		}
 		
 		return worldP;
+	}
+	
+	public static int genRand(int min, int max)
+	{
+		return rand.nextInt(max - min + 1) + min;
 	}
 }
