@@ -12,11 +12,11 @@ public class Utils {
 	private static Random rand = new Random();
 	
 	/**
-	 * Convert from screen pixels (starts from top-left corner) to world location (-1 -> 1)
+	 * Convert from screen pixels (starts from top-left corner) location to world location (-1 -> 1)
 	 * @param loc : a {@link Vector} contains screen pixels location
 	 * @return
 	 */
-	public static Vector ScreenToWorld(Vector loc)
+	public static Vector ScreenToWorldLoc(Vector loc)
 	{
 		Dimension d = Main.frame.getSize();
 		Vector worldP = new Vector();
@@ -50,6 +50,34 @@ public class Utils {
 		return worldP;
 	}
 	
+	/**
+	 * Convert {@link Vector} in pixels to world equivalent
+	 * @param dist
+	 * @return
+	 */
+	public static Vector ScreenToWorldDist(Vector dist)
+	{
+		Dimension d = Main.frame.getSize();
+		Vector tmp = new Vector();
+		if (dist.x > 0)
+		{
+			tmp.x = (dist.x / d.width) * 2;
+		}
+		
+		if (dist.y > 0)
+		{
+			tmp.y = (dist.y / d.height) * 2;
+		}
+		
+		return tmp;
+	}
+	
+	/**
+	 * Generate a random number from min (inclusive) to max (inclusive)
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public static int genRand(int min, int max)
 	{
 		return rand.nextInt(max - min + 1) + min;
