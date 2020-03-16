@@ -73,7 +73,7 @@ public class Utils {
 	}
 	
 	/**
-	 * Generate a random number from min (inclusive) to max (inclusive)
+	 * Generate a random integer from min (inclusive) to max (inclusive)
 	 * @param min
 	 * @param max
 	 * @return
@@ -81,5 +81,16 @@ public class Utils {
 	public static int genRand(int min, int max)
 	{
 		return rand.nextInt(max - min + 1) + min;
+	}
+	
+	/**
+	 * Generate a random double from min (inclusive) to max (inclusive)
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public static double genRand(double min, double max)
+	{
+		return rand.nextDouble() % (max - min + 1) + min;
 	}
 }

@@ -7,7 +7,10 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.util.gl2.GLUT;
 
+import main.Environment.Season;
+import main.Environment.Time;
 import objects.*;
 import shapes.*;
 
@@ -24,7 +27,9 @@ public class Main implements GLEventListener {
 	private static ArrayList<Particle> staticParticles = new ArrayList<>();
 	
 	private int displayList;
-	private double prevTick = System.currentTimeMillis(); 
+	private double prevTick = System.currentTimeMillis();
+	
+	private int font = GLUT.BITMAP_HELVETICA_18;
 
 	@Override
 	public void display(GLAutoDrawable gld) {
@@ -40,7 +45,29 @@ public class Main implements GLEventListener {
 			prevTick = System.currentTimeMillis();
 		}
 		
-		Snow.DrawAllSnow(gl);
+		if (Environment.getSeason() == Season.Winter)
+			Snow.DrawAllSnow(gl);
+		
+		GLUT glut = new GLUT();
+		Vector glutPoint = new Vector(5, 20);
+		Vector glutPointW = Utils.ScreenToWorldLoc(glutPoint);
+		gl.glRasterPos2d(glutPointW.x, glutPointW.y);
+		glut.glutBitmapString(font, "FPS: " + Math.round(getFPS()));
+		
+		glutPoint = glutPoint.Offset(0, 25);
+		glutPointW = Utils.ScreenToWorldLoc(glutPoint);
+		gl.glRasterPos2d(glutPointW.x, glutPointW.y);
+		glut.glutBitmapString(font, "Wind speed: " + Environment.getWindSpeed());
+
+		glutPoint = glutPoint.Offset(0, 25);
+		glutPointW = Utils.ScreenToWorldLoc(glutPoint);
+		gl.glRasterPos2d(glutPointW.x, glutPointW.y);
+		glut.glutBitmapString(font, "Snows available: " + Snow.getAvailableSnow());
+
+		glutPoint = glutPoint.Offset(0, 25);
+		glutPointW = Utils.ScreenToWorldLoc(glutPoint);
+		gl.glRasterPos2d(glutPointW.x, glutPointW.y);
+		glut.glutBitmapString(font, "Time: " + Environment.getTime());
 		
 		gl.glFlush();
 	}
@@ -52,6 +79,8 @@ public class Main implements GLEventListener {
 	@Override
 	public void init(GLAutoDrawable gld) {
 		final GL2 gl = gld.getGL().getGL2();
+		
+		gl.setSwapInterval(0);
 
 		// Enable transparent
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
@@ -62,11 +91,8 @@ public class Main implements GLEventListener {
 
 		gl.glNewList(displayList, GL2.GL_COMPILE);
 		
-		//Background - Sky
-		Vector[] verticies = { new Vector(-1, 1), new Vector(1, 1), new Vector(1, -1), new Vector(-1, -1)};
-		double[][] colours = {{0.8, 0.8, 0.8, 1}, {1, 0.9, 1, 1}, {0.8, 0.8, 0.8, 1}, {0.8, 0.8, 0.8, 1}};
-		
-		Polygon.drawFill(gl, verticies, colours);
+		Sky sky = new Sky();
+		staticParticles.add(sky);
 
 		Land land = new Land();
 		staticParticles.add(land);
@@ -83,7 +109,17 @@ public class Main implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable gld, int x, int y, int width, int height) {
-		display(gld);
+		final GL2 gl = gld.getGL().getGL2();
+		
+		gl.glNewList(displayList, GL2.GL_COMPILE);
+		
+		// Redraw -> recalculate positions of particles
+		for (Particle p : staticParticles)
+		{
+			p.draw(gl);
+		}
+		
+		gl.glEndList();
 	}
 	
 	public static void main(String[] args)
@@ -98,8 +134,8 @@ public class Main implements GLEventListener {
 		frame.setSize(1200, 800);
 		//frame.setResizable(false);
 		
-		animator = new FPSAnimator(144);	// How do I turn off v-sync?
-		animator.setUpdateFPSFrames(3, null);
+		animator = new FPSAnimator(144);
+		animator.setUpdateFPSFrames(10, null);
 		animator.add(canvas);
 		
 		frame.addWindowListener(new WindowAdapter() {
@@ -136,10 +172,14 @@ public class Main implements GLEventListener {
 		int currentNoSnow = Snow.snowParticles.size();
 		if (currentNoSnow < maxNumSnow)
 		{
+			// Adding snow particles
 			for (int i = 0; i < maxNumSnow - currentNoSnow && i < noSnowToAdd; i++)
 			{
+				// Compensate for wind speed by padding start point on x-axis of the snow
 				double fallSpeed = Utils.genRand(20, 70);
-				Snow.snowParticles.add(new Snow(Utils.genRand(0, frame.getSize().width), Utils.genRand(-frame.getSize().height / 4, 0), Utils.genRand(3, 5), fallSpeed));
+				double windWidthCompensate = frame.getSize().height / fallSpeed * Environment.getWindSpeed();
+				int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, frame.getSize().width) : Utils.genRand(0, (int)(frame.getSize().width - windWidthCompensate));
+				Snow.snowParticles.add(new Snow(startWidthPoint, Utils.genRand(-frame.getSize().height / 4, 0), Utils.genRand(3, 5), fallSpeed));
 			}
 		}
 		else
@@ -147,9 +187,14 @@ public class Main implements GLEventListener {
 			int i = 0;
 			for (Snow s : Snow.snowParticles)
 			{
+				// reusing dead snow particles
 				if (s.isDead && i < noSnowToAdd)
 				{
-					s.UpdatePos(new Vector(Utils.genRand(0, frame.getSize().width), Utils.genRand(-frame.getSize().height / 4, 0)));
+					// Compensate for wind speed by padding start point on x-axis of the snow
+					double fallSpeed = s.getFallSpeed();
+					double windWidthCompensate = frame.getSize().height / fallSpeed * Environment.getWindSpeed();
+					int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, frame.getSize().width) : Utils.genRand(0, (int)(frame.getSize().width - windWidthCompensate));
+					s.UpdatePos(new Vector(startWidthPoint, Utils.genRand(-frame.getSize().height / 4, 0)));
 					s.isDead = false;
 					i++;
 				}
