@@ -1,15 +1,14 @@
 package objects;
 
+import java.util.ArrayList;
+
 import com.jogamp.opengl.GL2;
-import main.Utils;
-import main.Vector;
-import shapes.Polygon;
-import shapes.Triangle;
 
-public class Tree extends Particle {
+public abstract class Tree extends Particle {
+	public static ArrayList<Tree> trees = new ArrayList<>();
 	
-	private int height = 0;
-
+	protected int height;
+	
 	public Tree(int x, int y, int height) {
 		super(x, y);
 		this.height = height;
@@ -17,50 +16,14 @@ public class Tree extends Particle {
 
 	@Override
 	public void draw(GL2 gl) {
-		Vector[] verticies;
-		
-		//i don't know what this is called. bottom bottom?		
-		verticies = new Vector[] {
-			Utils.ScreenToWorldLoc(Position.Offset(-5, -(height / 4.0))),
-			Utils.ScreenToWorldLoc(Position.Offset(5, -(height / 4.0))),
-			Utils.ScreenToWorldLoc(Position.Offset(5, 0)),
-			Utils.ScreenToWorldLoc(Position.Offset(-5, 0))
-		};
-		
-		Polygon.drawFill(gl, verticies, new double[] {0.05, 0.3, 0.1, 1});
-
-		gl.glBegin(GL2.GL_TRIANGLES);
-
-		//Bottom
-		verticies = new Vector[] {
-			Utils.ScreenToWorldLoc(Position.Offset(0, -(height / 2.0))),
-			Utils.ScreenToWorldLoc(Position.Offset(-25, -(height / 4.0))),
-			Utils.ScreenToWorldLoc(Position.Offset(25, -(height / 4.0)))
-		};
-		
-		Triangle.drawFill(gl, verticies, new double[] {0, 0.4, 0, 1});
-		
-		//Middle
-		verticies = new Vector[] {
-			Utils.ScreenToWorldLoc(Position.Offset(0, -(height / 4.0 * 3))),
-			Utils.ScreenToWorldLoc(Position.Offset(-20, -(height / 2.0) + 5)),
-			Utils.ScreenToWorldLoc(Position.Offset(20, -(height / 2.0) + 5))
-		};
-		
-		Triangle.drawFill(gl, verticies, new double[] {0, 0.4, 0, 1});
-		
-		//Top
-		verticies = new Vector[] {
-			Utils.ScreenToWorldLoc(Position.Offset(0, -height)),
-			Utils.ScreenToWorldLoc(Position.Offset(-15, -(height / 4.0 * 3) + 5)),
-			Utils.ScreenToWorldLoc(Position.Offset(15, -(height / 4.0 * 3) + 5))
-		};
-		
-		gl.glColor4f(0.99f, 0.99f, 0.99f, 0.1f);
-		
-		Triangle.drawFill(gl, verticies, new double[][] {{0.99, 0.99, 0.99, 1}, {0, 0.4, 0, 1}, {0, 0.4, 0, 1}});
-
-		gl.glEnd();
+		throw new NullPointerException("Draw function not defined");
 	}
-	
+
+	public static void DrawAllTrees(GL2 gl)
+	{
+		for (Tree t : trees)
+		{
+			t.draw(gl);
+		}
+	}
 }

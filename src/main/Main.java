@@ -41,7 +41,7 @@ public class Main implements GLEventListener {
 		
 		if (System.currentTimeMillis() - prevTick > 50)
 		{
-			GenerateSnow(200, 1);
+			GenerateSnow(200, 1);	// 200 max snow, generate 1 per 50 tick
 			prevTick = System.currentTimeMillis();
 		}
 		
@@ -85,24 +85,25 @@ public class Main implements GLEventListener {
 		// Enable transparent
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glEnable(GL2.GL_BLEND);
+		gl.glShadeModel(GL2.GL_SMOOTH);
+		
+		Sky sky = new Sky();
+		Environment.setSky(sky);
+
+		Land land = new Land();
+		Environment.setLand(land);
+		
+		GenerateTrees(10);
 		
 		// Initialize list of static objects
 		displayList = gl.glGenLists(1);
 
 		gl.glNewList(displayList, GL2.GL_COMPILE);
 		
-		Sky sky = new Sky();
-		staticParticles.add(sky);
-
-		Land land = new Land();
-		staticParticles.add(land);
+		Environment.getSky().draw(gl);
+		Environment.getLand().draw(gl);
 		
-		GenerateTrees(10);
-		
-		for (Particle p : staticParticles)
-		{
-			p.draw(gl);
-		}
+		Tree.DrawAllTrees(gl);
 		
 		gl.glEndList();
 	}
@@ -113,11 +114,10 @@ public class Main implements GLEventListener {
 		
 		gl.glNewList(displayList, GL2.GL_COMPILE);
 		
-		// Redraw -> recalculate positions of particles
-		for (Particle p : staticParticles)
-		{
-			p.draw(gl);
-		}
+		Environment.getSky().draw(gl);
+		Environment.getLand().draw(gl);
+		
+		Tree.DrawAllTrees(gl);
 		
 		gl.glEndList();
 	}
@@ -158,7 +158,11 @@ public class Main implements GLEventListener {
 	{		
 		for (int i = 0; i < numTrees; i++)
 		{
-			staticParticles.add(new Tree(Utils.genRand(10, frame.getSize().width), frame.getSize().height / 5 * 3 + i * (int)Math.round(80.0 / (double)numTrees), 50 + i * 2));
+			int treeType = Utils.genRand(1, 2);
+			if (treeType == 1)
+				Tree.trees.add(new PineTree(Utils.genRand(10, frame.getSize().width - 10), (int)Environment.getLand().getPosition().y + 20 + i * (int)Math.round(80.0 / numTrees), 50 + i * 10));
+			else
+				Tree.trees.add(new NormalTree(Utils.genRand(10, frame.getSize().width - 10), (int)Environment.getLand().getPosition().y + 20 + i * (int)Math.round(80.0 / numTrees), 50 + i * 10));
 		}
 	}
 	

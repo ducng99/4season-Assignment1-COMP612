@@ -23,7 +23,6 @@ public class Snow extends Particle {
 		super(x, y);
 		this.radius = radius;
 		this.fallSpeed = fallSpeed;
-		snowParticles.add(this);
 	}
 
 	@Override

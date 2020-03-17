@@ -12,7 +12,7 @@ import main.Vector;
 public class Land extends Particle {
 	public Land()
 	{
-		super(0, 0);
+		super(0, Main.frame.getSize().height - 200);
 	}
 
 	@Override
@@ -24,17 +24,17 @@ public class Land extends Particle {
 		Vector[] verticies;
 		
 		verticies = new Vector[] {
-			Utils.ScreenToWorldLoc(new Vector(0, d.getHeight() / 2)),
-			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 4, d.getHeight() / 2 - 20)),
-			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 2, d.getHeight() / 2 + 20)),
-			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 4 * 3, d.getHeight() / 2 - 10)),
-			Utils.ScreenToWorldLoc(new Vector(d.getWidth(), d.getHeight() / 2 + 10)),
+			Utils.ScreenToWorldLoc(new Vector(0, Position.y)),
+			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 4, Position.y - 20)),
+			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 2, Position.y + 20)),
+			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 4 * 3, Position.y - 10)),
+			Utils.ScreenToWorldLoc(new Vector(d.getWidth(), Position.y + 10)),
 			Utils.ScreenToWorldLoc(new Vector(d.getWidth(), d.getHeight())),
 			Utils.ScreenToWorldLoc(new Vector(0, d.getHeight()))
 		};
 		
 		double[][] colour= {
-			{0.1, 0, 0, 1}, {0.1, 0, 0, 1}, {0.1, 0, 0, 1}, {0.1, 0, 0, 1}, {0.2, 0.02, 0.02, 1}, {0.1, 0, 0, 1}, {0.1, 0, 0, 1}
+			{0, 0.1, 0, 1}, {0, 0.1, 0, 1}, {0, 0.1, 0, 1}, {0, 0.1, 0, 1}, {0, 0.2, 0, 1}, {0, 0.1, 0, 1}, {0, 0.1, 0, 1}
 		};
 		
 		Polygon.drawFill(gl, verticies, colour);

@@ -7,6 +7,11 @@ import com.jogamp.opengl.GL2;
 import main.Main;
 import main.Vector;
 
+/**
+ * Particle abstract class, contains position and draw function and availability of the particle
+ * @author Duc Nguyen
+ *
+ */
 public abstract class Particle {
 	protected Vector Position;
 	public boolean isDead;
@@ -17,10 +22,9 @@ public abstract class Particle {
 		isDead = false;
 	}
 	
-	public Particle(Vector pos)
+	public Vector getPosition()
 	{
-		this.Position = pos;
-		isDead = true;
+		return Position;
 	}
 	
 	public void checkAvailability()

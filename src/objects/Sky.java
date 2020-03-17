@@ -18,7 +18,7 @@ public class Sky extends Particle{
 		if (Environment.getTime() == Time.Day)
 		{	
 			Vector[] verticies = { new Vector(-1, 1), new Vector(1, 1), new Vector(1, -1), new Vector(-1, -1)};
-			double[][] colours = {{0.8, 0.8, 0.8, 1}, {1, 0.9, 1, 1}, {0.8, 0.8, 0.8, 1}, {0.8, 0.8, 0.8, 1}};
+			double[][] colours = {{0.8, 0.8, 0.8, 1}, {1, 0.98, 1, 1}, {0.8, 0.8, 0.8, 1}, {0.8, 0.8, 0.8, 1}};
 			
 			Polygon.drawFill(gl, verticies, colours);
 		}

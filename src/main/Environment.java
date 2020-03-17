@@ -1,5 +1,8 @@
 package main;
 
+import objects.Land;
+import objects.Sky;
+
 public class Environment {
 	public enum Time
 	{
@@ -14,6 +17,8 @@ public class Environment {
 	private static int windSpeed = 0;
 	private static Time time = Time.Day;
 	private static Season season = Season.Winter;
+	private static Land land;
+	private static Sky sky;
 	
 	protected static void setWindSpeed(int speed)
 	{
@@ -39,5 +44,21 @@ public class Environment {
 
 	public static void setSeason(Season season) {
 		Environment.season = season;
+	}
+
+	public static Land getLand() {
+		return land;
+	}
+
+	public static void setLand(Land land) {
+		Environment.land = land;
+	}
+
+	public static Sky getSky() {
+		return sky;
+	}
+
+	public static void setSky(Sky sky) {
+		Environment.sky = sky;
 	}
 }
