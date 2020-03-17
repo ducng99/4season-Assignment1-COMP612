@@ -84,13 +84,13 @@ public class Utils {
 	}
 	
 	/**
-	 * Generate a random double from min (inclusive) to max (inclusive)
+	 * Generate a random double from min (inclusive) to max (exclusive)
 	 * @param min
 	 * @param max
 	 * @return
 	 */
 	public static double genRand(double min, double max)
 	{
-		return rand.nextDouble() % (max - min + 1) + min;
+		return rand.nextDouble() * (max - min) + min;
 	}
 }

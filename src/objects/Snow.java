@@ -17,7 +17,7 @@ public class Snow extends Particle {
 	
 	private double radius = 0.0;
 	private double fallSpeed;
-	private double transparency = Utils.genRand(50, 85) / 100.0;
+	private double transparency = Utils.genRand(0.5, 0.85);
 	
 	public Snow(int x, int y, double radius, double fallSpeed) {
 		super(x, y);
@@ -43,6 +43,16 @@ public class Snow extends Particle {
 		checkAvailability();
 	}
 	
+	@Override
+	public void checkAvailability()
+	{
+		Dimension d = Main.frame.getSize();
+		if (Position.y > d.height + radius || (Environment.getWindSpeed() > 0 ? Position.x > d.width + radius : Position.x < -radius))
+		{
+			isDead = true;
+		}
+	}
+	
 	public static void DrawAllSnow(GL2 gl)
 	{
 		for (Snow s : snowParticles)
@@ -55,7 +65,7 @@ public class Snow extends Particle {
 		return fallSpeed;
 	}
 	
-	public static int getAvailableSnow()
+	public static int countAvailableSnow()
 	{
 		numSnowAvailable = 0;
 		Snow.snowParticles.forEach(snow -> {

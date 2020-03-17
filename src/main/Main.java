@@ -12,11 +12,9 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import main.Environment.Season;
 import main.Environment.Time;
 import objects.*;
-import shapes.*;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -24,10 +22,8 @@ public class Main implements GLEventListener {
 	public static final JFrame frame = new JFrame("Hello world");
 	private static FPSAnimator animator = null;
 	
-	private static ArrayList<Particle> staticParticles = new ArrayList<>();
-	
 	private int displayList;
-	private double prevTick = System.currentTimeMillis();
+	private long prevTick = System.currentTimeMillis();
 	
 	private int font = GLUT.BITMAP_HELVETICA_18;
 
@@ -62,12 +58,17 @@ public class Main implements GLEventListener {
 		glutPoint = glutPoint.Offset(0, 25);
 		glutPointW = Utils.ScreenToWorldLoc(glutPoint);
 		gl.glRasterPos2d(glutPointW.x, glutPointW.y);
-		glut.glutBitmapString(font, "Snows available: " + Snow.getAvailableSnow());
+		glut.glutBitmapString(font, "Snows available: " + Snow.countAvailableSnow());
 
 		glutPoint = glutPoint.Offset(0, 25);
 		glutPointW = Utils.ScreenToWorldLoc(glutPoint);
 		gl.glRasterPos2d(glutPointW.x, glutPointW.y);
 		glut.glutBitmapString(font, "Time: " + Environment.getTime());
+
+		glutPoint = glutPoint.Offset(0, 25);
+		glutPointW = Utils.ScreenToWorldLoc(glutPoint);
+		gl.glRasterPos2d(glutPointW.x, glutPointW.y);
+		glut.glutBitmapString(font, "Season: " + Environment.getSeason());
 		
 		gl.glFlush();
 	}
@@ -85,6 +86,7 @@ public class Main implements GLEventListener {
 		// Enable transparent
 		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glEnable(GL2.GL_BLEND);
+		gl.glEnable(GL2.GL_LINE_SMOOTH);
 		gl.glShadeModel(GL2.GL_SMOOTH);
 		
 		Sky sky = new Sky();
@@ -93,7 +95,7 @@ public class Main implements GLEventListener {
 		Land land = new Land();
 		Environment.setLand(land);
 		
-		GenerateTrees(10);
+		GenerateTrees(20);
 		
 		// Initialize list of static objects
 		displayList = gl.glGenLists(1);
@@ -148,6 +150,8 @@ public class Main implements GLEventListener {
 		
 		//Setup environment
 		Environment.setWindSpeed(30);
+		Environment.setTime(Time.Night);
+		Environment.setSeason(Season.Autumn);
 		
 		frame.setVisible(true);
 		
@@ -160,9 +164,9 @@ public class Main implements GLEventListener {
 		{
 			int treeType = Utils.genRand(1, 2);
 			if (treeType == 1)
-				Tree.trees.add(new PineTree(Utils.genRand(10, frame.getSize().width - 10), (int)Environment.getLand().getPosition().y + 20 + i * (int)Math.round(80.0 / numTrees), 50 + i * 10));
+				Tree.trees.add(new PineTree(Utils.genRand(10, frame.getSize().width - 10), (int)Environment.getLand().getPosition().y + 20 + i * (int)Math.round(80.0 / numTrees), 50 + i * 8));
 			else
-				Tree.trees.add(new NormalTree(Utils.genRand(10, frame.getSize().width - 10), (int)Environment.getLand().getPosition().y + 20 + i * (int)Math.round(80.0 / numTrees), 50 + i * 10));
+				Tree.trees.add(new NormalTree(Utils.genRand(10, frame.getSize().width - 10), (int)Environment.getLand().getPosition().y + 20 + i * (int)Math.round(80.0 / numTrees), 50 + i * 8));
 		}
 	}
 	

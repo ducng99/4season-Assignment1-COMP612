@@ -27,15 +27,18 @@ public abstract class Particle {
 		return Position;
 	}
 	
+	/**
+	 * Method used to define whether the particle {@link #isDead} or not. This is defined differently for each particle, some particles might not need this method, therefore the method is not abstract
+	 */
 	public void checkAvailability()
 	{
-		Dimension d = Main.frame.getSize();
-		if (Position.y > d.height)
-		{
-			isDead = true;
-		}
+		throw new NullPointerException("method not defined");
 	}
 	
+	/**
+	 * Draw the particle with provided {@link GL2} variable
+	 * @param gl
+	 */
 	public abstract void draw(GL2 gl);
 	
 	/**
