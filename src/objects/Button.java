@@ -1,6 +1,7 @@
 package objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.jogamp.opengl.GL2;
 
@@ -11,6 +12,7 @@ import shapes.Polygon;
 
 public class Button extends Particle {
 	public static ArrayList<Button> buttons = new ArrayList<>();
+	public static HashMap<Runnable, Button> linkedButton = new HashMap<>();
 	
 	private int width = 0;
 	private int height = 0;
@@ -26,6 +28,7 @@ public class Button extends Particle {
 		this.rgba = rgba;
 		buttons.add(this);
 		this.action = action;
+		linkedButton.put(action, this);
 	}
 
 	@Override
@@ -49,6 +52,16 @@ public class Button extends Particle {
 	public void DoAction()
 	{
 		action.run();
+	}
+	
+	public void SetText(String text)
+	{
+		this.text = text;
+	}
+	
+	public void SetColour(double[] colour)
+	{
+		this.rgba = colour;
 	}
 	
 	public boolean isInButton(Vector pos)
