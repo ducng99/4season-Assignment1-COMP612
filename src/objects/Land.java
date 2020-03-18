@@ -24,11 +24,11 @@ public class Land extends Particle {
 		Vector[] verticies;
 		
 		verticies = new Vector[] {
-			Utils.ScreenToWorldLoc(new Vector(0, Position.y)),
-			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 4, Position.y - 20)),
-			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 2, Position.y + 20)),
-			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 4 * 3, Position.y - 10)),
-			Utils.ScreenToWorldLoc(new Vector(d.getWidth(), Position.y + 10)),
+			Utils.ScreenToWorldLoc(new Vector(0, Position.y + 20)),
+			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 4, Position.y)),
+			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 2, Position.y)),
+			Utils.ScreenToWorldLoc(new Vector(d.getWidth() / 4 * 3, Position.y)),
+			Utils.ScreenToWorldLoc(new Vector(d.getWidth(), Position.y + 30)),
 			Utils.ScreenToWorldLoc(new Vector(d.getWidth(), d.getHeight())),
 			Utils.ScreenToWorldLoc(new Vector(0, d.getHeight()))
 		};

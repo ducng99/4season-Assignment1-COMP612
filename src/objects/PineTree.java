@@ -3,6 +3,7 @@ package objects;
 import com.jogamp.opengl.GL2;
 
 import main.Environment;
+import main.Environment.Season;
 import main.Utils;
 import main.Vector;
 import shapes.Circle;
@@ -59,10 +60,10 @@ public class PineTree extends Tree {
 			Utils.ScreenToWorldLoc(Position.Offset(15 + height / 20.0, -(height / 4.0 * 3) + 5))
 		};
 		
-		if (Environment.getSeason() == Environment.Season.Winter)
-			gl.glColor4f(0.99f, 0.99f, 0.99f, 0.1f);
-		
-		Triangle.drawFill(gl, verticies, new double[][] {{0.99, 0.99, 0.99, 1}, {0, 0.4, 0, 1}, {0, 0.4, 0, 1}});
+		if (Environment.getSeason() == Season.Winter)
+			Triangle.drawFill(gl, verticies, new double[][] {{0.99, 0.99, 0.99, 1}, {0, 0.4, 0, 1}, {0, 0.4, 0, 1}});
+		else
+			Triangle.drawFill(gl, verticies, new double[][] {{0, 0.4, 0, 1}, {0, 0.4, 0, 1}, {0, 0.4, 0, 1}});
 
 		gl.glEnd();
 	}

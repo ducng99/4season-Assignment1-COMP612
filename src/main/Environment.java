@@ -34,7 +34,7 @@ public class Environment {
 		return time;
 	}
 
-	public static void setTime(Time time) {
+	protected static void setTime(Time time) {
 		Environment.time = time;
 	}
 
@@ -42,7 +42,7 @@ public class Environment {
 		return season;
 	}
 
-	public static void setSeason(Season season) {
+	protected static void setSeason(Season season) {
 		Environment.season = season;
 	}
 
@@ -50,7 +50,7 @@ public class Environment {
 		return land;
 	}
 
-	public static void setLand(Land land) {
+	protected static void setLand(Land land) {
 		Environment.land = land;
 	}
 
@@ -58,7 +58,7 @@ public class Environment {
 		return sky;
 	}
 
-	public static void setSky(Sky sky) {
+	protected static void setSky(Sky sky) {
 		Environment.sky = sky;
 	}
 }

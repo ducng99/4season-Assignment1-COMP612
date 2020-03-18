@@ -13,16 +13,15 @@ import shapes.Circle;
 
 public class Snow extends Particle {
 	public static ArrayList<Snow> snowParticles = new ArrayList<>();
-	private static int numSnowAvailable = 0;
 	
 	private double radius = 0.0;
-	private double fallSpeed;
+	private int fallSpeed;
 	private double transparency = Utils.genRand(0.5, 0.85);
 	
-	public Snow(int x, int y, double radius, double fallSpeed) {
+	public Snow(int x, int y) {
 		super(x, y);
-		this.radius = radius;
-		this.fallSpeed = fallSpeed;
+		this.radius = Utils.genRand(3, 5);
+		this.fallSpeed = Utils.genRand(20, 70);
 	}
 
 	@Override
@@ -61,18 +60,19 @@ public class Snow extends Particle {
 		}
 	}
 	
-	public double getFallSpeed() {
+	public int getFallSpeed() {
 		return fallSpeed;
 	}
 	
 	public static int countAvailableSnow()
 	{
-		numSnowAvailable = 0;
-		Snow.snowParticles.forEach(snow -> {
-			if (!snow.isDead)
-				numSnowAvailable++;
-		});
+		int count = 0;
+		for (Snow s : snowParticles)
+		{	
+			if (!s.isDead)
+				count++;
+		}
 		
-		return numSnowAvailable;
+		return count;
 	}
 }

@@ -7,7 +7,7 @@ import com.jogamp.opengl.GL2;
 public abstract class Tree extends Particle {
 	public static ArrayList<Tree> trees = new ArrayList<>();
 	
-	protected int height;
+	public int height;
 	
 	public Tree(int x, int y, int height) {
 		super(x, y);
