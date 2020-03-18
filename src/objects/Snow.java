@@ -45,7 +45,7 @@ public class Snow extends Particle {
 	@Override
 	public void checkAvailability()
 	{
-		Dimension d = Main.frame.getSize();
+		Dimension d = Main.dimension;
 		if (Position.y > d.height + radius || (Environment.getWindSpeed() > 0 ? Position.x > d.width + radius : Position.x < -radius))
 		{
 			isDead = true;

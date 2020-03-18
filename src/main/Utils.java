@@ -18,7 +18,7 @@ public class Utils {
 	 */
 	public static Vector ScreenToWorldLoc(Vector loc)
 	{
-		Dimension d = Main.frame.getSize();
+		Dimension d = Main.dimension;
 		Vector worldP = new Vector();
 		
 		if (loc.x < d.width / 2)
@@ -57,7 +57,7 @@ public class Utils {
 	 */
 	public static Vector ScreenToWorldDist(Vector dist)
 	{
-		Dimension d = Main.frame.getSize();
+		Dimension d = Main.dimension;
 		Vector tmp = new Vector();
 		if (dist.x > 0)
 		{

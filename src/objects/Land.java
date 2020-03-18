@@ -12,13 +12,12 @@ import main.Vector;
 public class Land extends Particle {
 	public Land()
 	{
-		super(0, Main.frame.getSize().height - 200);
+		super(0, Main.dimension.height - 200);
 	}
 
 	@Override
 	public void draw(GL2 gl) {
-		Vector tmp = new Vector();
-		Dimension d = Main.frame.getSize();
+		Dimension d = Main.dimension;
 		d.height = d.height + 100;
 		
 		Vector[] verticies;

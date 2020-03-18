@@ -1,10 +1,7 @@
 package objects;
 
-import java.awt.Dimension;
-
 import com.jogamp.opengl.GL2;
 
-import main.Main;
 import main.Vector;
 
 /**

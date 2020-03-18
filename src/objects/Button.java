@@ -1,11 +1,10 @@
 package objects;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import com.jogamp.opengl.GL2;
 
+import main.Main;
 import main.Utils;
 import main.Vector;
 import shapes.Polygon;
@@ -16,12 +15,14 @@ public class Button extends Particle {
 	private int width = 0;
 	private int height = 0;
 	private double[] rgba;
-	private final Method action;
+	private String text;
+	private final Runnable action;
 
-	public Button(int x, int y, int width, int height, double[] rgba, Method action) {
+	public Button(int x, int y, int width, int height, String text, double[] rgba, Runnable action) {
 		super(x, y);
 		setWidth(width);
 		setHeight(height);
+		this.text = text;
 		this.rgba = rgba;
 		buttons.add(this);
 		this.action = action;
@@ -32,20 +33,40 @@ public class Button extends Particle {
 		Vector[] verticies = new Vector[]
 		{
 			Utils.ScreenToWorldLoc(Position),
-			Utils.ScreenToWorldLoc(Position.Offset(width)),
-			Utils.ScreenToWorldLoc(Position.Offset(width, height)),
-			Utils.ScreenToWorldLoc(Position.Offset(0, height))
+			Utils.ScreenToWorldLoc(Position.Offset(getWidth())),
+			Utils.ScreenToWorldLoc(Position.Offset(getWidth(), getHeight())),
+			Utils.ScreenToWorldLoc(Position.Offset(0, getHeight()))
 		};
 		
 		Polygon.drawFill(gl, verticies, rgba);
+		
+		gl.glColor3d(1, 1, 1);
+		Vector textLoc = Utils.ScreenToWorldLoc(Position.Offset(10, 20));
+		gl.glRasterPos2d(textLoc.x, textLoc.y);
+		Main.glut.glutBitmapString(Main.font, text);
 	}
 	
 	public void DoAction()
 	{
-		try {
-			action.invoke(this);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+		System.out.println("Button cliked");
+		action.run();
+	}
+	
+	public boolean isInButton(Vector pos)
+	{
+		if (pos.x >= Position.x && pos.x <= Position.x + getWidth() && pos.y >= Position.y && pos.y <= Position.y + getHeight())
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static void DrawAllButton(GL2 gl)
+	{
+		for (Button b : buttons)
+		{
+			b.draw(gl);
 		}
 	}
 

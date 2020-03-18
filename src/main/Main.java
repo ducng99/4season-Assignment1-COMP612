@@ -13,6 +13,7 @@ import main.Environment.Season;
 import main.Environment.Time;
 import objects.*;
 
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
@@ -23,14 +24,16 @@ import javax.swing.JFrame;
 
 public class Main implements GLEventListener, MouseListener {
 	public static final JFrame frame = new JFrame("4 seasons-ish");
+	private static GLCanvas canvas;
 	private static FPSAnimator animator;
+	public static Dimension dimension = new Dimension();
 	private static final LinkedBlockingQueue<MouseEvent> mouseEventsQ = new LinkedBlockingQueue<>();
 	
 	private int displayList;
 	private long prevTick = System.currentTimeMillis();
 
-	private GLUT glut = new GLUT();
-	private int font = GLUT.BITMAP_HELVETICA_18;
+	public static final GLUT glut = new GLUT();
+	public static final int font = GLUT.BITMAP_HELVETICA_18;
 
 	@Override
 	public void display(GLAutoDrawable gld) {
@@ -49,9 +52,9 @@ public class Main implements GLEventListener, MouseListener {
 		if (System.currentTimeMillis() - prevTick > 50)
 		{
 			if (Environment.getSeason() == Season.Winter)
-				GenerateSnow(200, 1);	// 200 max snow, generate 1 per 50 tick
+				GenerateSnow(200, 1);	// 200 max snow, generate 1 per 50 ticks
 			else
-				GenerateLeaf(2);	//10 per 50 ticks
+				GenerateLeaf(2);	//2 leaves per 50 ticks
 			prevTick = System.currentTimeMillis();
 		}
 		
@@ -59,6 +62,8 @@ public class Main implements GLEventListener, MouseListener {
 			Snow.DrawAllSnow(gl);
 		else
 			Leaf.DrawAllLeaf(gl);
+		
+		Button.DrawAllButton(gl);
 		
 		DrawDebugText(gl);
 		
@@ -87,6 +92,16 @@ public class Main implements GLEventListener, MouseListener {
 		Land land = new Land();
 		Environment.setLand(land);
 		
+		Button seasonButton = new Button(10, dimension.height - 40, 100, 30, "Change season", new double[] {0.5, 0.5, 0.5, 1}, new Runnable() {
+			@Override
+			public void run() {
+				if (Environment.getSeason() == Season.Winter)
+					Environment.setSeason(Season.Autumn);
+				else
+					Environment.setSeason(Season.Winter);
+			}});
+		Button.buttons.add(seasonButton);
+		
 		GenerateTrees(20);
 		
 		// Initialize list of static objects
@@ -106,6 +121,8 @@ public class Main implements GLEventListener, MouseListener {
 	public void reshape(GLAutoDrawable gld, int x, int y, int width, int height) {
 		final GL2 gl = gld.getGL().getGL2();
 		
+		dimension.setSize(canvas.getWidth(), canvas.getHeight());
+		
 		gl.glNewList(displayList, GL2.GL_COMPILE);
 		
 		Environment.getSky().draw(gl);
@@ -121,8 +138,10 @@ public class Main implements GLEventListener, MouseListener {
 		GLProfile glProfile = GLProfile.get(GLProfile.GL2);
 		GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 		
-		GLCanvas canvas = new GLCanvas(glCapabilities);
-		canvas.addGLEventListener(new Main());
+		canvas = new GLCanvas(glCapabilities);
+		Main main = new Main();
+		canvas.addGLEventListener(main);
+		canvas.addMouseListener(main);
 		
 		frame.add(canvas);
 		frame.setSize(1200, 800);
@@ -149,7 +168,10 @@ public class Main implements GLEventListener, MouseListener {
 		Environment.setTime(Time.Night);
 		Environment.setSeason(Season.Winter);
 		
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		dimension.setSize(canvas.getWidth(), canvas.getHeight());
+		canvas.requestFocusInWindow();
 		
 		animator.start();
 	}
@@ -164,9 +186,9 @@ public class Main implements GLEventListener, MouseListener {
 		{
 			int treeType = Utils.genRand(1, 2);
 			if (treeType == 1)
-				Tree.trees.add(new PineTree(Utils.genRand(10, frame.getSize().width - 10), (int)Environment.getLand().getPosition().y + 30 + i * (int)Math.round(100.0 / numTrees), 50 + i * 8));
+				Tree.trees.add(new PineTree(Utils.genRand(10, dimension.width - 10), (int)Environment.getLand().getPosition().y + 30 + i * (int)Math.round(100.0 / numTrees), 50 + i * 8));
 			else
-				Tree.trees.add(new NormalTree(Utils.genRand(10, frame.getSize().width - 10), (int)Environment.getLand().getPosition().y + 30 + i * (int)Math.round(100.0 / numTrees), 50 + i * 8));
+				Tree.trees.add(new NormalTree(Utils.genRand(10, dimension.width - 10), (int)Environment.getLand().getPosition().y + 30 + i * (int)Math.round(100.0 / numTrees), 50 + i * 8));
 		}
 	}
 	
@@ -186,8 +208,8 @@ public class Main implements GLEventListener, MouseListener {
 				// Compensate for wind speed by padding start point on x-axis of the snow
 				Snow s = new Snow(0, 0);
 				double fallSpeed = s.getFallSpeed();
-				double windWidthCompensate = frame.getSize().height / fallSpeed * Environment.getWindSpeed();
-				int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, frame.getSize().width) : Utils.genRand(0, (int)(frame.getSize().width - windWidthCompensate));
+				double windWidthCompensate = dimension.height / fallSpeed * Environment.getWindSpeed();
+				int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, dimension.width) : Utils.genRand(0, (int)(dimension.width - windWidthCompensate));
 				s.UpdatePos(new Vector(startWidthPoint, 0));
 				Snow.snowParticles.add(s);
 			}
@@ -202,8 +224,8 @@ public class Main implements GLEventListener, MouseListener {
 				{
 					// Compensate for wind speed by padding start point on x-axis of the snow
 					int fallSpeed = s.getFallSpeed();
-					double windWidthCompensate = frame.getSize().height / (double)fallSpeed * Environment.getWindSpeed();
-					int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, frame.getSize().width) : Utils.genRand(0, (int)(frame.getSize().width - windWidthCompensate));
+					double windWidthCompensate = dimension.height / (double)fallSpeed * Environment.getWindSpeed();
+					int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, dimension.width) : Utils.genRand(0, (int)(dimension.width - windWidthCompensate));
 					s.UpdatePos(new Vector(startWidthPoint, 0));
 					s.isDead = false;
 					i++;
@@ -216,7 +238,7 @@ public class Main implements GLEventListener, MouseListener {
 	{
 		if (Tree.trees.size() > 0)
 		{
-			int highestTreeHeight = frame.getSize().height;
+			int highestTreeHeight = dimension.height;
 			
 			for (int i = 0; i < Tree.trees.size(); i++)
 			{
@@ -231,8 +253,8 @@ public class Main implements GLEventListener, MouseListener {
 			{
 				Leaf l = new Leaf(0, 0);
 				int fallSpeed = l.getFallSpeed();
-				double windWidthCompensate = (frame.getSize().height - highestTreeHeight) / fallSpeed * Environment.getWindSpeed();
-				int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, frame.getSize().width) : Utils.genRand(0, (int)(frame.getSize().width - windWidthCompensate));
+				double windWidthCompensate = (dimension.height - highestTreeHeight) / fallSpeed * Environment.getWindSpeed();
+				int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, dimension.width) : Utils.genRand(0, (int)(dimension.width - windWidthCompensate));
 				l.UpdatePos(new Vector(startWidthPoint, Utils.genRand(highestTreeHeight, highestTreeHeight + 70)));
 				Leaf.leafParticles.add(l);
 			}
@@ -241,6 +263,7 @@ public class Main implements GLEventListener, MouseListener {
 	
 	private void DrawDebugText(GL2 gl)
 	{
+		gl.glColor4d(1, 1, 1, 0.8);
 		Vector glutPoint = new Vector(5, 20);
 		Vector glutPointW = Utils.ScreenToWorldLoc(glutPoint);
 		gl.glRasterPos2d(glutPointW.x, glutPointW.y);
@@ -276,10 +299,13 @@ public class Main implements GLEventListener, MouseListener {
 			MouseEvent e = mouseEventsQ.take();
 			Vector mousePos = new Vector(e.getX(), e.getY());
 			
+			System.out.println("X: " + e.getX() + " Y: " + e.getY());
+			
 			for (Button b : Button.buttons)
 			{
-				if (!b.isDead)
+				if (!b.isDead && b.isInButton(mousePos))
 				{
+					System.out.println("handling");
 					b.DoAction();
 				}
 			}
@@ -299,36 +325,29 @@ public class Main implements GLEventListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		try {
+			mouseEventsQ.put(arg0);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		try {
-			mouseEventsQ.put(arg0);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 }
