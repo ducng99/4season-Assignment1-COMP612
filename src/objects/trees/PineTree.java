@@ -1,4 +1,4 @@
-package objects;
+package objects.trees;
 
 import com.jogamp.opengl.GL2;
 

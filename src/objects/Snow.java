@@ -75,4 +75,46 @@ public class Snow extends Particle {
 		
 		return count;
 	}
+	
+	/**
+	 * Generate snow with maximum allowed number of snow. Snow will be reseted if dead and reused when maximum number of snow has been reached.
+	 * @param maxNumSnow maximum number of snow allowed
+	 * @param noSnowToAdd how many snow should be generated
+	 */
+	public static void GenerateSnow(int maxNumSnow, int noSnowToAdd)
+	{
+		int currentNoSnow = Snow.snowParticles.size();
+		if (currentNoSnow < maxNumSnow)
+		{
+			// Adding snow particles
+			for (int i = 0; i < maxNumSnow - currentNoSnow && i < noSnowToAdd; i++)
+			{
+				// Compensate for wind speed by padding start point on x-axis of the snow
+				Snow s = new Snow(0, 0);
+				double fallSpeed = s.getFallSpeed();
+				double windWidthCompensate = Main.dimension.height / fallSpeed * Environment.getWindSpeed();
+				int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, Main.dimension.width) : Utils.genRand(0, (int)(Main.dimension.width - windWidthCompensate));
+				s.UpdatePos(new Vector(startWidthPoint, 0));
+				Snow.snowParticles.add(s);
+			}
+		}
+		else
+		{
+			int i = 0;
+			for (Snow s : Snow.snowParticles)
+			{
+				// reusing dead snow particles
+				if (s.isDead && i < noSnowToAdd)
+				{
+					// Compensate for wind speed by padding start point on x-axis of the snow
+					int fallSpeed = s.getFallSpeed();
+					double windWidthCompensate = Main.dimension.height / (double)fallSpeed * Environment.getWindSpeed();
+					int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, Main.dimension.width) : Utils.genRand(0, (int)(Main.dimension.width - windWidthCompensate));
+					s.UpdatePos(new Vector(startWidthPoint, 0));
+					s.isDead = false;
+					i++;
+				}
+			}
+		}
+	}
 }
