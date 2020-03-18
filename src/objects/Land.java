@@ -17,7 +17,7 @@ public class Land extends Particle {
 
 	@Override
 	public void draw(GL2 gl) {
-		Dimension d = Main.dimension;
+		Dimension d = new Dimension(Main.dimension);
 		d.height = d.height + 100;
 		
 		Vector[] verticies;

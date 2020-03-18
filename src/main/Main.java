@@ -23,8 +23,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.JFrame;
 
 public class Main implements GLEventListener, MouseListener {
-	public static final JFrame frame = new JFrame("4 seasons-ish");
-	private static GLCanvas canvas;
 	private static FPSAnimator animator;
 	public static Dimension dimension = new Dimension();
 	private static final LinkedBlockingQueue<MouseEvent> mouseEventsQ = new LinkedBlockingQueue<>();
@@ -92,60 +90,52 @@ public class Main implements GLEventListener, MouseListener {
 		Land land = new Land();
 		Environment.setLand(land);
 		
-		Button seasonButton = new Button(10, dimension.height - 40, 100, 30, "Change season", new double[] {0.5, 0.5, 0.5, 1}, new Runnable() {
+		Button seasonButton = new Button(10, dimension.height - 40, 150, 30, "Change season", new double[] {0.3, 0.3, 0.3, 0.85}, new Runnable() {
 			@Override
 			public void run() {
 				if (Environment.getSeason() == Season.Winter)
+				{
+					System.out.println("Changed season: Autumn");
 					Environment.setSeason(Season.Autumn);
+					DrawStaticParticles(gl);
+				}
 				else
+				{
+					System.out.println("Changed season: Winter");
 					Environment.setSeason(Season.Winter);
+					DrawStaticParticles(gl);
+				}
 			}});
-		Button.buttons.add(seasonButton);
 		
 		GenerateTrees(20);
 		
 		// Initialize list of static objects
 		displayList = gl.glGenLists(1);
-
-		gl.glNewList(displayList, GL2.GL_COMPILE);
-		
-		Environment.getSky().draw(gl);
-		Environment.getLand().draw(gl);
-		
-		Tree.DrawAllTrees(gl);
-		
-		gl.glEndList();
+		DrawStaticParticles(gl);
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable gld, int x, int y, int width, int height) {
 		final GL2 gl = gld.getGL().getGL2();
 		
-		dimension.setSize(canvas.getWidth(), canvas.getHeight());
+		dimension.setSize(width, height);
 		
-		gl.glNewList(displayList, GL2.GL_COMPILE);
-		
-		Environment.getSky().draw(gl);
-		Environment.getLand().draw(gl);
-		
-		Tree.DrawAllTrees(gl);
-		
-		gl.glEndList();
+		DrawStaticParticles(gl);
 	}
 	
 	public static void main(String[] args)
 	{
+		JFrame frame = new JFrame("4 seasons-ish");
+		frame.setSize(1200, 800);
+		
 		GLProfile glProfile = GLProfile.get(GLProfile.GL2);
 		GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 		
-		canvas = new GLCanvas(glCapabilities);
+		GLCanvas canvas = new GLCanvas(glCapabilities);
 		Main main = new Main();
 		canvas.addGLEventListener(main);
 		canvas.addMouseListener(main);
-		
 		frame.add(canvas);
-		frame.setSize(1200, 800);
-		//frame.setResizable(false);
 		
 		animator = new FPSAnimator(144);
 		animator.setUpdateFPSFrames(10, null);
@@ -170,8 +160,8 @@ public class Main implements GLEventListener, MouseListener {
 		
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		dimension.setSize(canvas.getWidth(), canvas.getHeight());
 		canvas.requestFocusInWindow();
+		dimension.setSize(canvas.getSize());
 		
 		animator.start();
 	}
@@ -261,6 +251,18 @@ public class Main implements GLEventListener, MouseListener {
 		}
 	}
 	
+	private void DrawStaticParticles(GL2 gl)
+	{
+		gl.glNewList(displayList, GL2.GL_COMPILE);
+		
+		Environment.getSky().draw(gl);
+		Environment.getLand().draw(gl);
+		
+		Tree.DrawAllTrees(gl);
+		
+		gl.glEndList();
+	}
+	
 	private void DrawDebugText(GL2 gl)
 	{
 		gl.glColor4d(1, 1, 1, 0.8);
@@ -299,13 +301,10 @@ public class Main implements GLEventListener, MouseListener {
 			MouseEvent e = mouseEventsQ.take();
 			Vector mousePos = new Vector(e.getX(), e.getY());
 			
-			System.out.println("X: " + e.getX() + " Y: " + e.getY());
-			
 			for (Button b : Button.buttons)
 			{
 				if (!b.isDead && b.isInButton(mousePos))
 				{
-					System.out.println("handling");
 					b.DoAction();
 				}
 			}
@@ -325,11 +324,6 @@ public class Main implements GLEventListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		try {
-			mouseEventsQ.put(arg0);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -349,5 +343,10 @@ public class Main implements GLEventListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
+		try {
+			mouseEventsQ.put(arg0);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

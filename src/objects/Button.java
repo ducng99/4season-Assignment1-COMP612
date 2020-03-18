@@ -48,7 +48,6 @@ public class Button extends Particle {
 	
 	public void DoAction()
 	{
-		System.out.println("Button cliked");
 		action.run();
 	}
 	

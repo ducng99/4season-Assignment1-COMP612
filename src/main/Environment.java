@@ -20,7 +20,7 @@ public class Environment {
 	private static Land land;
 	private static Sky sky;
 	
-	protected static void setWindSpeed(int speed)
+	public static void setWindSpeed(int speed)
 	{
 		windSpeed = speed;
 	}
@@ -34,7 +34,7 @@ public class Environment {
 		return time;
 	}
 
-	protected static void setTime(Time time) {
+	public static void setTime(Time time) {
 		Environment.time = time;
 	}
 
@@ -42,7 +42,7 @@ public class Environment {
 		return season;
 	}
 
-	protected static void setSeason(Season season) {
+	public static void setSeason(Season season) {
 		Environment.season = season;
 	}
 
@@ -50,7 +50,7 @@ public class Environment {
 		return land;
 	}
 
-	protected static void setLand(Land land) {
+	public static void setLand(Land land) {
 		Environment.land = land;
 	}
 
@@ -58,7 +58,7 @@ public class Environment {
 		return sky;
 	}
 
-	protected static void setSky(Sky sky) {
+	public static void setSky(Sky sky) {
 		Environment.sky = sky;
 	}
 }

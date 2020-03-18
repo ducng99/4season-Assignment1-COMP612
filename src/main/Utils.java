@@ -21,31 +21,8 @@ public class Utils {
 		Dimension d = Main.dimension;
 		Vector worldP = new Vector();
 		
-		if (loc.x < d.width / 2)
-		{
-			worldP.x = (1 - (loc.x / (d.width / 2))) * -1;
-		}
-		else if (loc.x > d.width / 2)
-		{
-			worldP.x = (loc.x / (d.width / 2)) - 1;
-		}
-		else
-		{
-			worldP.x = 0;
-		}
-
-		if (loc.y < d.height / 2)
-		{
-			worldP.y = 1 - (loc.y / (d.height / 2));
-		}
-		else if (loc.y > d.height / 2)
-		{
-			worldP.y = ((loc.y / (d.height / 2)) * -1) + 1;
-		}
-		else
-		{
-			worldP.y = 0;
-		}
+		worldP.x = 2.0 * (loc.x / d.width) - 1.0;
+		worldP.y = 2.0 * ((d.height - loc.y) / d.height) - 1.0;
 		
 		return worldP;
 	}
