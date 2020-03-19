@@ -55,7 +55,15 @@ public class Main implements GLEventListener, MouseListener {
 			if (Environment.getSeason() == Season.Winter)
 				Snow.GenerateSnow(400, 5);	// 400 max snow, generate 2 per 50 ticks -> faster & more snow for snowman
 			else
+			{
 				Leaf.GenerateLeaf(2);	//2 leaves per 50 ticks
+				
+				// Call bulldozer to clean up leaves when there are more than 1000 leaves
+				if (Leaf.countAllLeaf() > 1000 && Environment.getCar().isDead)
+				{
+					Environment.getCar().StartCleanUp();
+				}
+			}
 			prevTick = System.currentTimeMillis();
 		}
 		
@@ -65,6 +73,9 @@ public class Main implements GLEventListener, MouseListener {
 			Snow.DrawAllSnow(gl);
 		else
 			Leaf.DrawAllLeaf(gl);
+		
+		if (Environment.getSeason() == Season.Autumn)
+			Environment.getCar().draw(gl);
 		
 		Button.DrawAllButton(gl);
 		
@@ -162,6 +173,9 @@ public class Main implements GLEventListener, MouseListener {
 		
 		Snowman sm = new Snowman((int)(dimension.width / 2.0), (int)(Environment.getLand().getPosition().y + (dimension.height - Environment.getLand().getPosition().y) / 2.0));
 		Environment.setSnowman(sm);
+		
+		Bulldozer car = new Bulldozer(-101, dimension.height - 50);
+		Environment.setCar(car);
 		
 		Tree.GenerateTrees(20);
 		

@@ -1,5 +1,6 @@
 package main;
 
+import objects.Bulldozer;
 import objects.Land;
 import objects.Sky;
 import objects.Snowman;
@@ -23,6 +24,7 @@ public class Environment {
 	private static Sky sky;
 	private static Sun sun;
 	private static Snowman snowman;
+	private static Bulldozer car;
 	
 	public static void setWindSpeed(int speed)
 	{
@@ -80,5 +82,13 @@ public class Environment {
 
 	public static void setSnowman(Snowman snowman) {
 		Environment.snowman = snowman;
+	}
+
+	public static Bulldozer getCar() {
+		return car;
+	}
+
+	public static void setCar(Bulldozer car) {
+		Environment.car = car;
 	}
 }

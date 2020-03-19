@@ -19,6 +19,7 @@ public class Leaf extends Particle {
 	private int fallSpeed = 0;
 	private double[][] rgbaArray;
 	private double stopHeight;
+	public boolean hasStopped = false;
 	private Vector[] posOffsets = {new Vector(Utils.genRand(-10, 10), Utils.genRand(-10, 10)), new Vector(Utils.genRand(-10, 10), Utils.genRand(-10, 10)), new Vector(Utils.genRand(-10, 10), Utils.genRand(-10, 10))};
 
 	public Leaf(int x, int y) {
@@ -31,19 +32,26 @@ public class Leaf extends Particle {
 
 	@Override
 	public void draw(GL2 gl) {
-		Vector[] verticies = new Vector[]
+		if (!isDead)
 		{
-			Utils.ScreenToWorldLoc(Position.Offset(posOffsets[0].x + size, posOffsets[0].y + size)),
-			Utils.ScreenToWorldLoc(Position.Offset(posOffsets[1].x + size, posOffsets[1].y + size)),
-			Utils.ScreenToWorldLoc(Position.Offset(posOffsets[2].x + size, posOffsets[2].y + size))
-		};
-		
-		Triangle.drawFill(gl, verticies, rgbaArray);
-		
-		if (Position.y < stopHeight)
-		{
-			// Consistent speed for any FPS + leaf moving
-			UpdatePos(Position.Offset((Environment.getWindSpeed() + Utils.genRand(0, 10)) / Main.getFPS() + Utils.genRand(-0.5, 0.5), fallSpeed / Main.getFPS()));
+			Vector[] verticies = new Vector[]
+			{
+				Utils.ScreenToWorldLoc(Position.Offset(posOffsets[0].x + size, posOffsets[0].y + size)),
+				Utils.ScreenToWorldLoc(Position.Offset(posOffsets[1].x + size, posOffsets[1].y + size)),
+				Utils.ScreenToWorldLoc(Position.Offset(posOffsets[2].x + size, posOffsets[2].y + size))
+			};
+			
+			Triangle.drawFill(gl, verticies, rgbaArray);
+			
+			if (Position.y < stopHeight)
+			{
+				// Consistent speed for any FPS + leaf moving
+				UpdatePos(Position.Offset((Environment.getWindSpeed() + Utils.genRand(0, 10)) / Main.getFPS() + Utils.genRand(-0.5, 0.5), fallSpeed / Main.getFPS()));
+			}
+			else
+			{
+				hasStopped = true;
+			}
 		}
 	}
 
@@ -51,13 +59,14 @@ public class Leaf extends Particle {
 	public void UpdatePos(Vector pos)
 	{
 		Position = pos;
+		checkAvailability();
 	}
 	
 	@Override
 	public void checkAvailability()
 	{
 		Dimension d = Main.dimension;
-		if (Position.y > d.height + size || (Environment.getWindSpeed() > 0 ? Position.x > d.width + size : Position.x < -size))
+		if (Position.y > (d.height + size) || Environment.getWindSpeed() > 0 ? Position.x > (d.width + size) : Position.x < -size)
 		{
 			isDead = true;
 		}
@@ -116,6 +125,7 @@ public class Leaf extends Particle {
 					int fallSpeed = l.getFallSpeed();
 					double windWidthCompensate = (Main.dimension.height - highestTreeHeight) / fallSpeed * Environment.getWindSpeed();
 					int startWidthPoint = windWidthCompensate >= 0 ? Utils.genRand((int)-windWidthCompensate, Main.dimension.width) : Utils.genRand(0, (int)(Main.dimension.width - windWidthCompensate));
+					l.isDead = false;
 					l.UpdatePos(new Vector(startWidthPoint, Utils.genRand(highestTreeHeight, highestTreeHeight + 70)));
 					addedLeaf++;
 				}
