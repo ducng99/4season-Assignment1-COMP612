@@ -47,16 +47,19 @@ public class Main implements GLEventListener, MouseListener {
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
 		
 		gl.glCallList(displayList);
+		Environment.getSun().draw(gl);	// Update sun every 50ms
 		
 		// Every 50ms
 		if (System.currentTimeMillis() - prevTick > 50)
-		{
+		{			
 			if (Environment.getSeason() == Season.Winter)
-				Snow.GenerateSnow(200, 1);	// 200 max snow, generate 1 per 50 ticks
+				Snow.GenerateSnow(400, 5);	// 400 max snow, generate 2 per 50 ticks -> faster & more snow for snowman
 			else
 				Leaf.GenerateLeaf(2);	//2 leaves per 50 ticks
 			prevTick = System.currentTimeMillis();
 		}
+		
+		Environment.getSnowman().draw(gl);
 		
 		if (Environment.getSeason() == Season.Winter)
 			Snow.DrawAllSnow(gl);
@@ -88,29 +91,33 @@ public class Main implements GLEventListener, MouseListener {
 		
 		Sky sky = new Sky();
 		Environment.setSky(sky);
+		
+		Sun sun = new Sun(dimension.width - 100, 100);
+		Environment.setSun(sun);
 
 		Land land = new Land();
 		Environment.setLand(land);
 		
+		// Initialize buttons
 		new Button(10, dimension.height - 40, 150, 30, "Season: Winter", new double[] {0, 0, 0.4, 0.85}, new Runnable() {
 			@Override
 			public void run() {
 				if (Environment.getSeason() != Season.Winter)
 				{
-					System.out.println("Changed season: Winter");
 					Environment.setSeason(Season.Winter);
 					Button.linkedButton.get(this).isDead = true;
 					Button.linkedButton.get(this).SetText("Season: Winter");
 					Button.linkedButton.get(this).SetColour(new double[] {0, 0, 0.4, 0.85});
+					System.out.println("Changed season: Winter");
 					DrawStaticParticles(gl);
 				}
 				else
 				{
-					System.out.println("Changed season: Autumn");
 					Environment.setSeason(Season.Autumn);
 					Button.linkedButton.get(this).isDead = false;
 					Button.linkedButton.get(this).SetText("Season: Autumn");
 					Button.linkedButton.get(this).SetColour(new double[] {0, 0.2, 0.6, 0.85});
+					System.out.println("Changed season: Autumn");
 					DrawStaticParticles(gl);
 				}
 			}});
@@ -120,36 +127,41 @@ public class Main implements GLEventListener, MouseListener {
 			public void run() {
 				if (Environment.getTime() == Time.Day)
 				{
-					System.out.println("Changed time: Night");
 					Environment.setTime(Time.Night);
 					Button.linkedButton.get(this).SetText("Time: Night");
 					Button.linkedButton.get(this).SetColour(new double[] {0, 0, 0.4, 0.85});
+					System.out.println("Changed time: Night");
 					DrawStaticParticles(gl);
 				}
 				else
 				{
-					System.out.println("Changed time: Day");
 					Environment.setTime(Time.Day);
 					Button.linkedButton.get(this).SetText("Time: Day");
 					Button.linkedButton.get(this).SetColour(new double[] {0, 0.2, 0.6, 0.85});
+					System.out.println("Changed time: Day");
 					DrawStaticParticles(gl);
 				}
 			}
 		});
 		
-		new Button(330, dimension.height - 40, 150, 30, "Wind Speed +", new double[] {0, 0, 0.4, 0.85}, new Runnable() {
-			@Override
-			public void run() {
-				Environment.setWindSpeed(Environment.getWindSpeed() + 5);
-			}
-		});
-		
-		new Button(490, dimension.height - 40, 150, 30, "Wind Speed -", new double[] {0, 0, 0.4, 0.85}, new Runnable() {
+		new Button(330, dimension.height - 40, 150, 30, "Wind Speed -", new double[] {0, 0, 0.4, 0.85}, new Runnable() {
 			@Override
 			public void run() {
 				Environment.setWindSpeed(Environment.getWindSpeed() - 5);
+				System.out.println("Wind speed - 5 = " + Environment.getWindSpeed());
 			}
 		});
+		
+		new Button(490, dimension.height - 40, 150, 30, "Wind Speed +", new double[] {0, 0, 0.4, 0.85}, new Runnable() {
+			@Override
+			public void run() {
+				Environment.setWindSpeed(Environment.getWindSpeed() + 5);
+				System.out.println("Wind speed + 5 = " + Environment.getWindSpeed());
+			}
+		});
+		
+		Snowman sm = new Snowman((int)(dimension.width / 2.0), (int)(Environment.getLand().getPosition().y + (dimension.height - Environment.getLand().getPosition().y) / 2.0));
+		Environment.setSnowman(sm);
 		
 		Tree.GenerateTrees(20);
 		

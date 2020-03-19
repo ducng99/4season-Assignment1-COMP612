@@ -12,6 +12,10 @@ import shapes.Polygon;
 
 public class Button extends Particle {
 	public static ArrayList<Button> buttons = new ArrayList<>();
+	
+	/**
+	 * Link {@link Runnable} object with its {@link Button} object. This helps getting button from inside a runnable.
+	 */
 	public static HashMap<Runnable, Button> linkedButton = new HashMap<>();
 	
 	private int width = 0;
@@ -49,6 +53,9 @@ public class Button extends Particle {
 		Main.glut.glutBitmapString(Main.font, text);
 	}
 	
+	/**
+	 * Call the defined {@link #action}
+	 */
 	public void DoAction()
 	{
 		action.run();

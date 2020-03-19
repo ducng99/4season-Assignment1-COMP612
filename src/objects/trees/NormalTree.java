@@ -25,7 +25,7 @@ public class NormalTree extends Tree {
 		Vector[] verticies;
 		
 		//Shadow
-		Circle.drawFill(gl, Utils.ScreenToWorldLoc(Position), Utils.ScreenToWorldDist(new Vector(15 + height / 8.0, 5 + height / 8.0)), 30, new double[] {0, 0, 0, 0.2});
+		Circle.drawFill(gl, Utils.ScreenToWorldLoc(Position), Utils.ScreenToWorldDist(new Vector(15 + height / 10.0, 5 + height / 10.0)), 30, new double[] {0, 0, 0, 0.5}, new double[] {0, 0, 0, 0});
 		
 		// Body
 		verticies = new Vector[]
@@ -42,7 +42,7 @@ public class NormalTree extends Tree {
 		if (Environment.getSeason() == Season.Autumn)
 		{
 			// Foliage
-			Circle.drawFill(gl, foliageLoc, foliageRad, 40, new double[] {0.3137, 0.482, 0, 1});
+			Circle.drawFill(gl, foliageLoc, foliageRad, 40, new double[] {0.3137, 0.482, 0, 0.95});
 			Circle.drawLines(gl, foliageLoc, foliageRad, 40, new double[] {0, 0, 0, 0.3});
 		}
 	}

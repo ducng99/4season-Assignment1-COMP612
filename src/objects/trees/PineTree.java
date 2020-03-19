@@ -21,7 +21,7 @@ public class PineTree extends Tree {
 		Vector[] verticies;
 		
 		//Shadow
-		Circle.drawFill(gl, Utils.ScreenToWorldLoc(Position), Utils.ScreenToWorldDist(new Vector(20 + height / 10.0, 10 + height / 10.0)), 30, new double[] {0, 0, 0, 0.2});
+		Circle.drawFill(gl, Utils.ScreenToWorldLoc(Position), Utils.ScreenToWorldDist(new Vector(20 + height / 10.0, 10 + height / 10.0)), 30, new double[] {0, 0, 0, 0.5}, new double[] {0, 0, 0, 0});
 		
 		//base
 		verticies = new Vector[] {

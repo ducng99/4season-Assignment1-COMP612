@@ -24,6 +24,26 @@ public class Circle {
 		gl.glEnd();
 	}
 
+	public static void drawFill(GL2 gl, Vector pos, Vector radius, int steps, double[]rgba, double[] rgba2)
+	{
+		gl.glBegin(GL2.GL_TRIANGLE_FAN);
+		
+		gl.glColor4d(rgba[0], rgba[1], rgba[2], rgba[3]);
+		
+		gl.glVertex2d(pos.x, pos.y);
+
+		for (double deg = 0.0; deg <= 360.0; deg += 360.0 / steps)
+		{
+			double rad = Math.toRadians(deg);
+			double tmpX = pos.x + Math.cos(rad) * radius.x;
+		    double tmpY = pos.y + Math.sin(rad) * radius.y;
+			gl.glColor4d(rgba2[0], rgba2[1], rgba2[2], rgba2[3]);
+		    gl.glVertex2d(tmpX, tmpY);
+		}
+		
+		gl.glEnd();
+	}
+
 	public static void drawLines(GL2 gl, Vector pos, Vector radius, int steps, double[] rgba)
 	{
 		gl.glBegin(GL2.GL_LINE_LOOP);

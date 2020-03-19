@@ -16,19 +16,20 @@ public class Snow extends Particle {
 	
 	private double radius = 0.0;
 	private int fallSpeed;
-	private double transparency = Utils.genRand(0.5, 0.85);
+	private double transparency = Utils.genRand(0.6, 0.85);
+	private boolean inSnowman = false;
 	
 	public Snow(int x, int y) {
 		super(x, y);
 		this.radius = Utils.genRand(3, 5);
-		this.fallSpeed = Utils.genRand(20, 70);
+		this.fallSpeed = Utils.genRand(30, 100);
 	}
 
 	@Override
 	public void draw(GL2 gl) {
 		if (!isDead)
 		{
-			Circle.drawFill(gl, Utils.ScreenToWorldLoc(Position), Utils.ScreenToWorldDist(new Vector(radius, radius)), 20, new double[] {1, 1, 1, transparency});
+			Circle.drawFill(gl, Utils.ScreenToWorldLoc(Position), Utils.ScreenToWorldDist(new Vector(radius, radius)), 20, new double[] {1, 1, 1, transparency}, new double[] {0.9, 0.9, 0.9, transparency});
 		
 			// Consistent speed for any FPS + snow shake
 			UpdatePos(Position.Offset((Environment.getWindSpeed() + Utils.genRand(0, 10)) / Main.getFPS() + Utils.genRand(-0.5, 0.5), fallSpeed / Main.getFPS()));
@@ -38,7 +39,11 @@ public class Snow extends Particle {
 	@Override
 	public void UpdatePos(Vector pos)
 	{
-		Position = pos;
+		// check whether the snow touch the snowman
+		if (!inSnowman && !Environment.getSnowman().IsInSnowman(this))
+			Position = pos;
+		else
+			inSnowman = true;
 		checkAvailability();
 	}
 	
@@ -60,6 +65,11 @@ public class Snow extends Particle {
 		}
 	}
 	
+	public double getRadius()
+	{
+		return radius;
+	}
+	
 	public int getFallSpeed() {
 		return fallSpeed;
 	}
@@ -69,7 +79,7 @@ public class Snow extends Particle {
 		int count = 0;
 		for (Snow s : snowParticles)
 		{	
-			if (!s.isDead)
+			if (!s.isDead && !s.inSnowman)
 				count++;
 		}
 		
@@ -83,7 +93,7 @@ public class Snow extends Particle {
 	 */
 	public static void GenerateSnow(int maxNumSnow, int noSnowToAdd)
 	{
-		int currentNoSnow = Snow.snowParticles.size();
+		int currentNoSnow = Snow.snowParticles.size() - Environment.getSnowman().getNoSnowInSnowman();
 		if (currentNoSnow < maxNumSnow)
 		{
 			// Adding snow particles
